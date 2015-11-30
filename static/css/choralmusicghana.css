@@ -1,0 +1,57 @@
+@font-face {
+	font-family: regular;
+	src: url('../fonts/System_San_Francisco_Display_Regular.ttf');
+}
+
+@font-face {
+	font-family: thin;
+	src: url('../fonts/System_San_Francisco_Display_Thin.ttf');
+}
+
+@font-face {
+	font-family: bold;
+	src: url('../fonts/System_San_Francisco_Display_Bold.ttf');
+}
+
+@font-face {
+	font-family: stylistic;
+	src: url('../fonts/Arapey_Regular.ttf');
+}
+
+@font-face {
+	font-family: italic;
+	src: url('../fonts/Arapey_Italic.ttf');
+}
+
+body{
+	padding-top: 70px;
+}
+
+.highlight-heading{
+	font-family: italic;
+	font-size: 60px;
+}
+
+.highlight-body{
+	font-family: regular;
+	font-size: 16px;
+}
+
+.media-row{
+	overflow: x;
+	max-height: 50px;
+}
+
+.highlight-img{
+	box-shadow: 0px 0px 10px #CCAEAE;
+}
+
+.alert-info{
+	background: #000000;
+	color: #FFFFFF;
+	border-radius: 0px;
+	border-style: none;
+	font-family: stylistic;
+	font-size: 16px;
+	box-shadow: 0px 0px 10px #CCAEAE;
+}
