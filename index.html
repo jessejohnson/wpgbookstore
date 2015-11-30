@@ -72,7 +72,7 @@
                   <table>
                     <tr ng-repeat="item in order.cart">
                       <td>{{item.title}}</td>
-                      <td><input type="number" ng-model="item.qty" value="{{item.qty}}" min="1" required/></td>
+                      <td><input placeholder="Quantity" type="number" ng-model="item.qty" value="{{item.qty}}" min="1" required/></td>
                     </tr>
                   </table>
 
