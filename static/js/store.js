@@ -21,7 +21,7 @@
 		function getBooks(){
 			var req = {
 				method: 'GET',
-				url: '/static/data/books.json'
+				url: 'static/data/books.json'
 			}
 			return $http(req);
 		}
