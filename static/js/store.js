@@ -66,6 +66,8 @@
 			+ "<p>Ordering Email: " + order.email + "</p>"
 			+ "<p>Location: " + order.location + "</p>"
 			+ "<p>Delivery Option: " + order.deliveryOption + "</p>"
+			+ "<p>Full Name: " + order.fullName + "</p>"
+			+ "<p>Address (Optional): " + order.address + "</p>"
 			+ detailsHTML
 			+ "Please <strong>transfer " + order.totalAmount + " Ghana cedis to "+ WPG_TRANSACTION_NUMBER + " </strong> from any valid mobile money agent <strong>with the following code: " + order.orderId + "</strong><br><br> Thank You!";
 			var mandrillPayload = {
@@ -111,8 +113,8 @@
 
 		$scope.currentBook = {};
 		$scope.order = {};
-		$scope.places = ['East Legon', 'Legon Campus', 'KNUST', 'Obuasi'];
-		$scope.deliveryOptions = ['EMS', 'Graphic Parcel Service', 'VIP (bus courier)', 'STC (bus courier)'];
+	//	$scope.places = ['East Legon', 'Legon Campus', 'KNUST', 'Obuasi'];
+		$scope.deliveryOptions = ['EMS', 'Ghana Post', 'Graphic Parcel Service', 'VIP (bus courier)', 'STC (bus courier)'];
 
 		//load books first
 		listingService.getBooks().then(function(success){
@@ -231,8 +233,10 @@
 			email
 			location
 			deliveryOption
+			fullName
+			NOTE: Address is optional
 			*/
-			var orderKeys = ["totalAmount", "phoneNumber", "email", "location", "deliveryOption"];
+			var orderKeys = ["totalAmount", "phoneNumber", "email", "location", "deliveryOption", "fullName"];
 			var isValid = false;
 			orderKeys.forEach(function(key){			
 				if(order.hasOwnProperty(key)){
