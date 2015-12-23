@@ -5,8 +5,8 @@
 
 	angular.module('bookstoreapp', [])
 	.constant('MANDRILL_BASE', 'https://mandrillapp.com/api/1.0/')
-	.constant('WPG_EMAIL', 'choralmusicghana@gmail.com')
-	.constant('WPG_TRANSACTION_NUMBER', '024-021-6666')
+	.constant('WPG_EMAIL', 'info@writersprojectghana.com')
+	.constant('WPG_TRANSACTION_NUMBER', '026-169-5952')
 	.constant('PARSE_APP_ID', 'DaSLysAGwnv8XyixHYYtLcEeivNDHD0yyuuU6pA1')
 	.constant('PARSE_JAVASCRIPT_KEY', 'yopYGWqiv5xzLBoe3mAewzyJOPpBTwg9aMKzShBt')
 	.factory('listingService', listingServiceFunction)
@@ -167,8 +167,12 @@
 		}
 
 		//use this function to clear the cart
-		$scope.clearCart = function(){
+		$scope.clearOrder = function(){
+			$scope.order.cart.forEach(function(item){
+				item.qty = "";
+			});
 			$scope.order.cart = [];
+			//$scope.order = {};
 		}
 
 		//use this function to create an order

@@ -114,15 +114,16 @@
                 <form name="makeOrderForm" ng-hide="order.cart.length == 0">
                   <input class="form-control" type="tel" ng-model="order.phoneNumber" placeholder="Enter your phone number" name="number" required>
                   <input class="form-control" type="email" ng-model="order.email" placeholder="Enter your email address" name="email" required>
-                  <select class="form-control" name="loc" class="" ng-model="order.location" required>
+                  <input class="form-control" type="text" ng-model="order.location" placeholder="Your location" name="loc" required>
+           <!--        <select class="form-control" name="loc" class="" ng-model="order.location" required>
                     <option value="" disabled selected>Delivery Location</option>
                     <option ng-repeat="place in places" value="{{place}}">{{place}}</option>
-                  </select>
+                  </select> -->
                   <select class="form-control" name="delivery" class="" ng-model="order.deliveryOption" required>
                     <option value="" disabled selected>Delivery Options</option>
                     <option ng-repeat="op in deliveryOptions" value="{{op}}">{{op}}</option>
                   </select>
-                  <button type="button" class="btn btn-default" ng-click="clearCart()">Clear Cart</button>
+                  <button type="button" class="btn btn-default" ng-click="clearOrder()">Clear Order</button>
                   <button type="submit" class="btn btn-cart" ng-click="makeOrder()">Order Now</button>
                 </form>
               </div>
