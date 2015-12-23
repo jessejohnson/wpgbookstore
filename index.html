@@ -67,7 +67,7 @@
           <ul ng-show="list" class="list-inline">
             <li ng-repeat="book in list" class="li-listing text-center"> 
               <a href="#" class="a-listing" data-toggle="modal" data-target="#detailModal" ng-click="selectBook(book)">
-                <img class="img-listing" src="{{book.imageUrl}}" alt="{{book.title}}" height="250px">
+                <img class="img-listing" src="{{book.imageFile.url}}" alt="{{book.title}}" height="250px">
                 <br><br>
                 <p>{{book.title}}</p>
                 <p>{{book.amount}} {{book.currency}}</p>
