@@ -7,14 +7,17 @@
 	.constant('MANDRILL_BASE', 'https://mandrillapp.com/api/1.0/')
 	.constant('WPG_EMAIL', 'choralmusicghana@gmail.com')
 	.constant('WPG_TRANSACTION_NUMBER', '024-021-6666')
+	.constant('PARSE_APP_ID', 'DaSLysAGwnv8XyixHYYtLcEeivNDHD0yyuuU6pA1')
+	.constant('PARSE_JAVASCRIPT_KEY', 'yopYGWqiv5xzLBoe3mAewzyJOPpBTwg9aMKzShBt')
 	.factory('listingService', listingServiceFunction)
 	.factory('orderService', orderServiceFunction)
 	.controller('mainCtrl', mainCtrlFunction);
 
-	function listingServiceFunction($http){
+	function listingServiceFunction($http, PARSE_APP_ID, PARSE_JAVASCRIPT_KEY){
 		//api
 		return {
-			getBooks: getBooks
+			getBooks: getBooks,
+			getBooksFromParse: getBooksFromParse
 		}
 
 		//private methods
@@ -22,6 +25,19 @@
 			var req = {
 				method: 'GET',
 				url: 'static/data/books.json'
+			}
+			return $http(req);
+		}
+
+		function getBooksFromParse(){
+			var req = {
+				method: 'GET',
+				url: "https://api.parse.com/1/classes/Books",
+				headers: {
+					"X-Parse-Application-Id": PARSE_APP_ID,
+					"X-Parse-Javascript-Key": PARSE_JAVASCRIPT_KEY,
+					"Content-Type": "application/json"
+				}
 			}
 			return $http(req);
 		}
@@ -49,6 +65,7 @@
 			+ "<p>Ordering Number: " + order.phoneNumber + "</p>"
 			+ "<p>Ordering Email: " + order.email + "</p>"
 			+ "<p>Location: " + order.location + "</p>"
+			+ "<p>Delivery Option: " + order.deliveryOption + "</p>"
 			+ detailsHTML
 			+ "Please <strong>transfer " + order.totalAmount + " Ghana cedis to "+ WPG_TRANSACTION_NUMBER + " </strong> from any valid mobile money agent <strong>with the following code: " + order.orderId + "</strong><br><br> Thank You!";
 			var mandrillPayload = {
@@ -72,7 +89,7 @@
 					"important": true,
 					"track_opens": true,
 					"preserve_recipients": false,
-					"bcc_address": "choralmusicghana@gmail.com",
+					"bcc_address": WPG_EMAIL,
 					"metadata": {
 						"website": "www.writersprojectghana.com"
 					}
@@ -95,15 +112,25 @@
 		$scope.currentBook = {};
 		$scope.order = {};
 		$scope.places = ['East Legon', 'Legon Campus', 'KNUST', 'Obuasi'];
+		$scope.deliveryOptions = ['EMS', 'Graphic Parcel Service', 'VIP (bus courier)', 'STC (bus courier)'];
 
 		//load books first
 		listingService.getBooks().then(function(success){
 			//success
-			$scope.list = success.data;
+			//$scope.list = success.data;
 		}, function(error){
 			//error
 			console.log(error.data);
 		});
+
+		listingService.getBooksFromParse().then(function(success){
+			//success
+			console.log(success.data.results);
+			$scope.list = success.data.results;
+		}, function(error){
+			//error
+			console.log(error);
+		})
 
 		//use this function to select a book from the list
 		//as the current item for operations
@@ -119,9 +146,10 @@
 				$scope.order.cart = [];
 			}
 			$scope.order.cart.forEach(function(b){
-				if(b.id == book.id){
+				if(b.bookId == book.bookId){
 					exists = true;
 					console.log(b.title + " exists!");
+					console.log(b.bookId +"=="+book.bookId);
 				}
 			});
 
@@ -138,6 +166,11 @@
 			}
 		}
 
+		//use this function to clear the cart
+		$scope.clearCart = function(){
+			$scope.order.cart = [];
+		}
+
 		//use this function to create an order
 		//to be sent to WPG
 		$scope.makeOrder = function(){
@@ -150,23 +183,32 @@
 				//multiplies the amount by the quantity being purchased
 				amount += item.amount * item.qty;
 			});
+			//rounds amount to a sensible, payable figure
 			$scope.order.totalAmount = Math.round(amount*100)/100 ;
 			console.log($scope.order);
 
+			var isValid = validateOrder($scope.order);
+			console.log(isValid);
 
-			//send order notice now
-
-			orderService.sendOrder($scope.order).then(function(success){
-				console.log(success);
-				$('#orderModal').modal('show');
-			}, function(error){
-				console.log(error);
-			});
-			//after sending order,
-			//show user order id..?
-			$scope.finalOrderId = $scope.order.orderId;
+			if(isValid){			
+				//send order notice now if valid...
+				orderService.sendOrder($scope.order).then(function(success){
+					console.log(success);
+					$('#orderModal').modal('show');
+				}, function(error){
+					console.log(error);
+				});
+				//after sending order,
+				//show user order id..?
+				$scope.finalOrderId = $scope.order.orderId;
+			} else{
+				//...otherwise
+				$('#invalidOrderModal').modal('show');
+				console.log("order is invalid!");
+			}
 		}
 
+		//use this function to generate a unique orderId
 		function guid() {
 			function s4() {
 				return Math.floor((1 + Math.random()) * 0x10000)
@@ -174,6 +216,47 @@
 				//.substring(1);
 			}
 			return s4();
+		}
+
+		//use this function to validate the order befor sending the email
+		function validateOrder(order){
+			/*
+			checks the following properties
+			totalAmount
+			phoneNumber
+			email
+			location
+			deliveryOption
+			*/
+			var orderKeys = ["totalAmount", "phoneNumber", "email", "location", "deliveryOption"];
+			var isValid = false;
+			orderKeys.forEach(function(key){			
+				if(order.hasOwnProperty(key)){
+					if(key == undefined){
+						isValid = false;
+						return
+					} else{
+						if(isNaN(order.totalAmount)){
+							isValid = false;
+							return
+						}else{
+							isValid = true;
+						}
+					}
+				} else{
+					isValid = false;
+					return
+				}
+			})
+			// for(var key in orderKeys){
+			// }
+			console.log("return isValid..");
+			return isValid
+			// if(order.totalAmount != undefined && order.totalAmount != NaN){
+			// 	if(order.phoneNumber != undefined && order.phoneNumber != ""){
+			// 		if(order.email != undefined)
+			// 	}
+			// }
 		}
 	}
 })();

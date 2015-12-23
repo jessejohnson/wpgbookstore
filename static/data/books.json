@@ -3,11 +3,14 @@
 		"id":"001",
 		"title":"Wuthering Heights",
 		"author": "Emily Bronte",
-		"image": "static/data/images/wuthering-heights.jpg",
+		"image": "/static/data/images/wuthering-heights.jpg",
+		"imageFile": "",
 		"description": "Wuthering Heights is Emily Brontë's only novel. Written between October 1845 and June 1846, Wuthering Heights was published in 1847 under the pseudonym 'Ellis Bell'; Brontë died the following year, aged 30.",
 		"amount": 12.00,
 		"currency": "cedis",
-		"inStock": true
+		"inStock": true,
+		"numberInStock": 10,
+		"ISBN": "XXXXXXX"
 	},
 	{
 		"id":"002",
