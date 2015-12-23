@@ -66,13 +66,13 @@
           <img class="img-loading" ng-hide="list" src="static/img/loading.gif">
           <ul ng-show="list" class="list-inline">
             <li ng-repeat="book in list" class="li-listing text-center"> 
-              <a href="#" class="a-listing" data-toggle="modal" data-target="#detailModal" ng-click="selectBook(book)">
+              <a ng-show="book.inStock" href="#" class="a-listing" data-toggle="modal" data-target="#detailModal" ng-click="selectBook(book)">
                 <img class="img-listing" src="{{book.imageFile.url}}" alt="{{book.title}}" height="250px">
                 <br><br>
                 <p>{{book.title}}</p>
                 <p>{{book.amount}} {{book.currency}}</p>
               </a>
-              <button class="btn btn-listing" ng-click="addToCart(book)">Add to Cart</button>
+              <button ng-show="book.inStock" class="btn btn-listing" ng-click="addToCart(book)">Add to Cart</button>
             </li>
           </ul>
         </div>
