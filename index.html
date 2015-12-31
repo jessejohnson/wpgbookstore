@@ -110,15 +110,19 @@
                     <td><input class="form-control" type="number" placeholder="Quantity" ng-model="item.qty" value="{{item.qty}}" min="1" required/></td>
                   </tr>
                 </table>
-                <h4 class="page-header header" ng-hide="order.cart.length == 0">Complete order information</h4>
+                <h4 class="page-header header" ng-hide="order.cart.length == 0">Complete order information (all fields are required) </h4>
                 <form name="makeOrderForm" ng-hide="order.cart.length == 0">
                   <input class="form-control" type="tel" ng-model="order.phoneNumber" placeholder="Enter your phone number" name="number" required>
                   <input class="form-control" type="email" ng-model="order.email" placeholder="Enter your email address" name="email" required>
                   <input class="form-control" type="text" ng-model="order.fullName" placeholder="Your Full Name" name="fullName" required>
                   <input class="form-control" type="text" ng-model="order.location" placeholder="Your location" name="loc" required>
+                  <select class="form-control" name="region" class="" ng-model="order.region" required>
+                    <option value="" disabled selected>Region</option>
+                    <option ng-repeat="op in regions" value="{{op.name}}">{{op.name}}</option>
+                  </select>
                   <select class="form-control" name="delivery" class="" ng-model="order.deliveryOption" required>
                     <option value="" disabled selected>Delivery Options</option>
-                    <option ng-repeat="op in deliveryOptions" value="{{op}}">{{op}}</option>
+                    <option ng-repeat="op in deliveryOptions" value="{{op.name}}">{{op.name}}</option>
                   </select>
                   <hr ng-show="order.deliveryOption == 'EMS' || order.deliveryOption == 'Ghana Post'">
                   <p ng-show="order.deliveryOption == 'EMS' || order.deliveryOption == 'Ghana Post'">Options for {{order.deliveryOption}} </p>

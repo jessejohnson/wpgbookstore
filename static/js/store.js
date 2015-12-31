@@ -114,7 +114,83 @@
 		$scope.currentBook = {};
 		$scope.order = {};
 	//	$scope.places = ['East Legon', 'Legon Campus', 'KNUST', 'Obuasi'];
-		$scope.deliveryOptions = ['EMS', 'Ghana Post', 'Graphic Parcel Service', 'VIP (bus courier)', 'STC (bus courier)'];
+		/*
+		Use objects to represent delivery options + costs and other properties.
+		Cost is restricted to cedis for now.
+		*/
+		$scope.deliveryOptions = [
+			{
+				name: 'EMS',
+				costCoefficient: '10'
+			},
+			{
+				name: 'Ghana Post',
+				costCoefficient: '4'
+			},
+			{
+				name: 'Graphic Parcel Service',
+				costCoefficient: '6'
+			},
+			{
+				name: 'VIP (bus courier)',
+				costCoefficient: '8'
+			},
+			{
+				name: 'STC (bus courier)',
+				costCoefficient: '4'
+			}
+		];
+
+		// $scope.deliveryOptions = [
+		// 	'EMS', 'Ghana Post', 'Graphic Parcel Service', 'VIP (bus courier)', 'STC (bus courier)'
+		// 	];
+
+		/*
+		Include a list of regions the user must select from.
+		Each region has its associated cost
+		*/
+		$scope.regions = [
+			{
+				name: 'Greater Accra',
+				cost: '3'
+			},
+			{
+				name: 'Eastern',
+				cost: '4'
+			},
+			{
+				name: 'Western',
+				cost: '6'
+			},
+			{
+				name: 'Ashanti',
+				cost: '7'
+			},
+			{
+				name: 'Volta',
+				cost: '5'
+			},
+			{
+				name: 'Central',
+				cost: '4'
+			},
+			{
+				name: 'Brong-Ahafo',
+				cost: '7'
+			},
+			{
+				name: 'Upper East',
+				cost: '9'
+			},
+			{
+				name: 'Upper West',
+				cost: '9'
+			},
+			{
+				name: 'Northern',
+				cost: '8'
+			}
+		];
 
 		//load books first
 		listingService.getBooks().then(function(success){
@@ -232,11 +308,12 @@
 			phoneNumber
 			email
 			location
+			region
 			deliveryOption
 			fullName
 			NOTE: Address is optional
 			*/
-			var orderKeys = ["totalAmount", "phoneNumber", "email", "location", "deliveryOption", "fullName"];
+			var orderKeys = ["totalAmount", "phoneNumber", "email", "location", "region", "deliveryOption", "fullName"];
 			var isValid = false;
 			orderKeys.forEach(function(key){			
 				if(order.hasOwnProperty(key)){
