@@ -271,6 +271,8 @@
 		$scope.makeOrder = function(){
 			$scope.order.orderId = guid();
 			$scope.order.orderDate = Date();
+
+			//amount may be redundant now that we have a real-time totalCost
 			var amount = 0;
 
 			//calculate totalAmount
@@ -280,7 +282,8 @@
 				amount += item.amount * item.qty;
 			});
 			//rounds amount to a sensible, payable figure
-			$scope.order.totalAmount = Math.round(amount*100)/100 ;
+			//replace amount with totalCost
+			$scope.order.totalAmount = Math.round($scope.totalCost*100)/100 ;
 			console.log($scope.order);
 
 			var isValid = validateOrder($scope.order);
