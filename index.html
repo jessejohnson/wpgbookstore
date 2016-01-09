@@ -103,25 +103,28 @@
               </div>
               <div class="modal-body">
                 <!-- hide form and cart table when order.cart.length == 0 -->
-                <p ng-show="order.cart.length == 0">Your cart is empty. Add books to order</p>
+                <p ng-show="order.cart.length == 0">Your cart is empty. Add books to order</p> 
                 <table ng-hide="order.cart.length == 0">
                   <tr ng-repeat="item in order.cart">
                     <td>{{item.title}}</td>
-                    <td><input class="form-control" type="number" placeholder="Quantity" ng-model="item.qty" value="{{item.qty}}" min="1" required/></td>
+                    <td><input class="form-control" type="number" placeholder="Quantity" ng-model="item.qty" ng-change="computeCost()" value="{{item.qty}}" min="1" required/></td>
                   </tr>
                 </table>
+
+                <h3 ng-hide="order.cart.length == 0">Total Cost: {{totalCost}} </h3>
+      
                 <h4 class="page-header header" ng-hide="order.cart.length == 0">Complete order information (all fields are required) </h4>
                 <form name="makeOrderForm" ng-hide="order.cart.length == 0">
                   <input class="form-control" type="tel" ng-model="order.phoneNumber" placeholder="Enter your phone number" name="number" required>
                   <input class="form-control" type="email" ng-model="order.email" placeholder="Enter your email address" name="email" required>
-                  <input class="form-control" type="text" ng-model="order.fullName" placeholder="Your Full Name" name="fullName" required>
-                  <input class="form-control" type="text" ng-model="order.location" placeholder="Your location" name="loc" required>
-                  <select class="form-control" name="region" class="" ng-model="order.region" required>
-                    <option value="" disabled selected>Region</option>
+                  <input class="form-control" type="text" ng-model="order.fullName" placeholder="Enter your full name" name="fullName" required>
+                  <input class="form-control" type="text" ng-model="order.location" placeholder="Enter your location/house address" name="loc" required>
+                  <select class="form-control" name="region" class="" ng-model="order.region" ng-change="computeCost()" required>
+                    <option value="" disabled selected>Select your region</option>  
                     <option ng-repeat="op in regions" value="{{op.name}}">{{op.name}}</option>
                   </select>
-                  <select class="form-control" name="delivery" class="" ng-model="order.deliveryOption" required>
-                    <option value="" disabled selected>Delivery Options</option>
+                  <select class="form-control" name="delivery" class="" ng-model="order.deliveryOption" ng-change="computeCost()" required>
+                    <option value="" disabled selected>Select a delivery option</option>
                     <option ng-repeat="op in deliveryOptions" value="{{op.name}}">{{op.name}}</option>
                   </select>
                   <hr ng-show="order.deliveryOption == 'EMS' || order.deliveryOption == 'Ghana Post'">

@@ -17,7 +17,8 @@
 		//api
 		return {
 			getBooks: getBooks,
-			getBooksFromParse: getBooksFromParse
+			getBooksFromParse: getBooksFromParse,
+			getRegions: getRegions
 		}
 
 		//private methods
@@ -25,6 +26,14 @@
 			var req = {
 				method: 'GET',
 				url: 'static/data/books.json'
+			}
+			return $http(req);
+		}
+
+		function getRegions(){
+			var req = {
+				method: 'GET',
+				url: 'static/data/regions.json'
 			}
 			return $http(req);
 		}
@@ -114,41 +123,45 @@
 		$scope.currentBook = {};
 		$scope.order = {};
 	//	$scope.places = ['East Legon', 'Legon Campus', 'KNUST', 'Obuasi'];
+
 		/*
-		Use objects to represent delivery options + costs and other properties.
+		Use objects to represent delivery options + weight coefficients and other properties.
 		Cost is restricted to cedis for now.
 		*/
 		$scope.deliveryOptions = [
 			{
 				name: 'EMS',
-				costCoefficient: '10'
+				weightCoefficient: '10'
 			},
 			{
 				name: 'Ghana Post',
-				costCoefficient: '4'
+				weightCoefficient: '4'
 			},
 			{
 				name: 'Graphic Parcel Service',
-				costCoefficient: '6'
+				weightCoefficient: '6'
 			},
 			{
 				name: 'VIP (bus courier)',
-				costCoefficient: '8'
+				weightCoefficient: '8'
 			},
 			{
 				name: 'STC (bus courier)',
-				costCoefficient: '4'
+				weightCoefficient: '4'
 			}
 		];
-
-		// $scope.deliveryOptions = [
-		// 	'EMS', 'Ghana Post', 'Graphic Parcel Service', 'VIP (bus courier)', 'STC (bus courier)'
-		// 	];
 
 		/*
 		Include a list of regions the user must select from.
 		Each region has its associated cost
 		*/
+
+		// listingService.getRegions().then(function(success){
+		// 	console.log("Regions: ", success.data);
+		// 	$scope.regions = success.data;
+		// }, function(error){
+		// 	//do nothing!
+		// });
 		$scope.regions = [
 			{
 				name: 'Greater Accra',
@@ -261,6 +274,7 @@
 			var amount = 0;
 
 			//calculate totalAmount
+			//replace with sophisticated ordering function
 			$scope.order.cart.forEach(function(item){
 				//multiplies the amount by the quantity being purchased
 				amount += item.amount * item.qty;
@@ -281,8 +295,8 @@
 					console.log(error);
 				});
 				//after sending order,
-				//show user order id..?
-				$scope.finalOrderId = $scope.order.orderId;
+				//show user order id..? Not necessary! REMOVE
+				//$scope.finalOrderId = $scope.order.orderId;
 			} else{
 				//...otherwise
 				$('#invalidOrderModal').modal('show');
@@ -290,12 +304,59 @@
 			}
 		}
 
+		//use this function to (re)compute the total cost of your current order
+		//triggered when item quantity, region and delivery option are changed
+		$scope.computeCost = function(){
+			console.log("Calculating cost or order...", $scope.order);
+			//cost calculated based on 
+			// 1. unit cost of each item (??),
+			// 2. weight coefficient (c1) of selected delivery option
+			// 3. cost of delivery to chosen region
+			// 4. weight is the total weight of the order??
+
+			//total cost = c1 * weightSum * region_cost + bulkSellingPrice
+			var weightSum = 0;
+			var bulkSellingPrice = 0;
+			var weightCoefficient = 1;
+			var regionCost = 1;
+
+			$scope.order.cart.forEach(function(item){
+				weightSum += item.weight;
+				if(!isNaN(item.qty)){
+					bulkSellingPrice += item.amount * item.qty;
+				}
+
+				console.log("New weightSum and bulkSellingPrice are", weightSum, bulkSellingPrice);
+			});
+
+			if($scope.order.hasOwnProperty("deliveryOption")){
+				console.log("we have weightCoefficient!");
+				$scope.deliveryOptions.forEach(function(op){
+					if(op.name == $scope.order.deliveryOption){
+						weightCoefficient = op.weightCoefficient
+					}
+				})
+			}
+
+			if($scope.order.hasOwnProperty("region")){
+				console.log("we have regionCost!");
+				$scope.regions.forEach(function(reg){
+					if(reg.name == $scope.order.region){
+						regionCost = reg.cost;
+					}
+				})
+			}
+
+			$scope.totalCost = (weightCoefficient * weightSum * regionCost) + bulkSellingPrice;
+			console.log("New totalCost is ", $scope.totalCost); 
+			console.log("weightCoefficient and regionCost are ", weightCoefficient, regionCost)
+		}
+
 		//use this function to generate a unique orderId
 		function guid() {
 			function s4() {
 				return Math.floor((1 + Math.random()) * 0x10000)
 				.toString(16);
-				//.substring(1);
 			}
 			return s4();
 		}
@@ -333,15 +394,8 @@
 					return
 				}
 			})
-			// for(var key in orderKeys){
-			// }
 			console.log("return isValid..");
 			return isValid
-			// if(order.totalAmount != undefined && order.totalAmount != NaN){
-			// 	if(order.phoneNumber != undefined && order.phoneNumber != ""){
-			// 		if(order.email != undefined)
-			// 	}
-			// }
 		}
 	}
 })();
