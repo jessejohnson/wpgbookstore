@@ -262,8 +262,16 @@
 			$scope.order.cart.forEach(function(item){
 				item.qty = "";
 			});
-			//$scope.order.cart = [];
-			$scope.order = {};
+			$scope.order.cart = [];
+			$scope.order.deliveryOption = "";
+			$scope.order.fullName = "";
+			$scope.order.location = "";
+			$scope.order.email = "";
+			$scope.order.phoneNumber = "";
+			$scope.order.region = "";
+			$scope.order.address = "";
+			//$scope.order = {};
+			//$scope.totalCost = 0;
 		}
 
 		//use this function to create an order
