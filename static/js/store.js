@@ -262,8 +262,8 @@
 			$scope.order.cart.forEach(function(item){
 				item.qty = "";
 			});
-			$scope.order.cart = [];
-			//$scope.order = {};
+			//$scope.order.cart = [];
+			$scope.order = {};
 		}
 
 		//use this function to create an order
